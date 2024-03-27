@@ -22,7 +22,7 @@ spring:
     # jpa底层默认使用的ORM框架是hibernate
     hibernate:
       # DDL是数据定义语言, 这个字段设置怎么控制数据库里的表
-      ddl-auto: update
+      ddl-auto: create
     # 打印sql
     show-sql: true
     properties:
