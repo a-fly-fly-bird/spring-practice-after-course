@@ -20,7 +20,7 @@ public class UserRole {
     @Column(nullable = false)
     private UserRoleEnum role;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JsonBackReference
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

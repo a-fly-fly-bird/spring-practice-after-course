@@ -32,7 +32,7 @@ public class User {
   @Column(length = 50, nullable = false)
   private String password;
 
-  @OneToMany(cascade = CascadeType.REFRESH , mappedBy = "user")
+  @OneToMany(mappedBy = "user")
   @JsonManagedReference
   private List<UserRole> userRoles;
 }

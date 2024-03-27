@@ -1,17 +1,16 @@
 package pers.terry.springpracticeaftercourse.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pers.terry.springpracticeaftercourse.dto.UserDto;
 import pers.terry.springpracticeaftercourse.dto.UserReponseDto;
 import pers.terry.springpracticeaftercourse.service.UserService;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -20,5 +19,10 @@ public class UserController {
     @PostMapping("/register")
     public UserReponseDto addUser(@RequestBody UserDto userDto){
         return this.userService.addUser(userDto);
+    }
+
+    @GetMapping("/{uuid}")
+    public UserReponseDto addUser(@PathVariable UUID uuid){
+        return this.userService.getUserById(uuid);
     }
 }
