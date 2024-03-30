@@ -4,3 +4,5 @@
 - https://github.dev/yifanzheng/spring-security-jwt
 - https://github.com/a-fly-fly-bird/spring-jpa-complete-practice
 
+## Redis
+- https://juejin.cn/post/7076244567569203208

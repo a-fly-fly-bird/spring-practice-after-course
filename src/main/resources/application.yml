@@ -33,6 +33,17 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     # 这个不是必须的，会自动检测
     database: mysql
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      # https://github.com/redis/lettuce/wiki/Connection-Pooling
+      lettuce:
+        pool:
+          max-idle: 16
+          max-active: 32
+          min-idle: 8
 
 # 不再使用SpringFox，而是SpringDoc
 springdoc:
@@ -52,3 +63,4 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+

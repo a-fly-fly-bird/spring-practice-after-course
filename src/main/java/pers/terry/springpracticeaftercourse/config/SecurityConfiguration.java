@@ -34,6 +34,7 @@ public class SecurityConfiguration {
         private final CustomAccessDeniedHandler customAccessDeniedHandler;
         private final CustomUnauthorizedHandler customUnauthorizedHandler;
 
+        @SuppressWarnings("removal")
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http.csrf(AbstractHttpConfigurer::disable).headers(headers -> headers.frameOptions().disable())
