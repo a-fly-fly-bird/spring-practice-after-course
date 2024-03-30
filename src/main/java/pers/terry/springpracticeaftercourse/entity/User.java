@@ -1,7 +1,13 @@
 package pers.terry.springpracticeaftercourse.entity;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -20,7 +26,7 @@ import lombok.Data;
 @Data
 @Builder
 @Table(name = "user")
-public class User {
+public class User implements UserDetails {
 
   @Id
   @Column(nullable = false, unique = true)
@@ -34,13 +40,13 @@ public class User {
   @Column(nullable = false, length = 30)
   private String name;
 
-  @Column(length = 50)
+  @Column(length = 50, unique = true)
   private String email;
 
   @Column()
   private Integer age;
 
-  @Column(length = 50, nullable = false)
+  @Column(length = 256, nullable = false)
   private String password;
 
   /**
@@ -57,4 +63,38 @@ public class User {
   @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
   @JsonManagedReference
   private List<UserRole> userRoles;
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    List<GrantedAuthority> auths = new ArrayList<>();
+    for (UserRole userRole : userRoles) {
+      auths.add(new SimpleGrantedAuthority(userRole.getRole().name()));
+    }
+    return auths;
+  }
+
+  @Override
+  public String getUsername() {
+    return this.email;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 }

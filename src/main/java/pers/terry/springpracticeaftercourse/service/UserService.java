@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import pers.terry.springpracticeaftercourse.dto.UserDto;
 import pers.terry.springpracticeaftercourse.dto.UserReponseDto;
 import pers.terry.springpracticeaftercourse.entity.User;
@@ -15,16 +20,15 @@ import pers.terry.springpracticeaftercourse.enums.UserRoleEnum;
 import pers.terry.springpracticeaftercourse.repository.UserRepository;
 
 @Service
-public class UserService {
+@RequiredArgsConstructor
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     public UserReponseDto addUser(UserDto userDto) {
         User user = this.toUser(userDto);
+        var password = new BCryptPasswordEncoder().encode(userDto.password());
+        user.setPassword(password);
         user = this.userRepository.save(user);
         return toUserResponseDto(user);
     }
@@ -45,5 +49,15 @@ public class UserService {
     public UserReponseDto getUserById(UUID uuid) {
         Optional<User> user = this.userRepository.findById(uuid);
         return user.map(this::toUserResponseDto).orElse(null);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("username is " + username);
+        Optional<User> user = this.userRepository.findByEmail(username);
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("没有找到该用户");
+        }
+        return user.get();
     }
 }
