@@ -15,21 +15,18 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import pers.terry.springpracticeaftercourse.service.JwtAuthService;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
   private final static String AUTH_HEADER = "Authorization";
   private final static String AUTH_HEADER_TYPE = "Bearer ";
 
-  private JwtAuthService jwtAuthService;
-  private UserDetailsService userDetailsService;
-
-  JwtAuthFilter(JwtAuthService jwtAuthService, UserDetailsService userDetailsService) {
-    this.jwtAuthService = jwtAuthService;
-    this.userDetailsService = userDetailsService;
-  }
+  private final JwtAuthService jwtAuthService;
+  private final UserDetailsService userDetailsService;
 
   @SuppressWarnings("null")
   @Override

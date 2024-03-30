@@ -22,7 +22,6 @@ import pers.terry.springpracticeaftercourse.handler.CustomUnauthorizedHandler;
 public class SecurityConfiguration {
 
         private static final String[] WHITE_LIST_URL = {
-                        "/user/**",
                         "/auth/**",
                         "/swagger-ui/**",
                         "/webjars/**",

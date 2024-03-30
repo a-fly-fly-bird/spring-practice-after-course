@@ -2,6 +2,7 @@ package pers.terry.springpracticeaftercourse.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -24,15 +25,14 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     String username = String.valueOf(authentication.getPrincipal());
     String password = String.valueOf(authentication.getCredentials());
 
-    System.out.println("username" + username + "password" + password);
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-    return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
-    // if (passwordEncoder.matches(password, userDetails.getPassword())) {
-    // return new UsernamePasswordAuthenticationToken(username, password,
-    // userDetails.getAuthorities());
-    // }
 
-    // throw new BadCredentialsException("Error!!");
+    if (passwordEncoder.matches(password, userDetails.getPassword())) {
+      return new UsernamePasswordAuthenticationToken(username, password,
+          userDetails.getAuthorities());
+    }
+
+    throw new BadCredentialsException("Error!!");
   }
 
   @Override

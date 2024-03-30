@@ -30,6 +30,7 @@ public class JwtAuthService {
   private long refreshExpiration;
 
   public String extractUsername(String token) {
+    System.out.println("extractClaim(token, Claims::getSubject) " + extractClaim(token, Claims::getSubject));
     return extractClaim(token, Claims::getSubject);
   }
 
@@ -60,6 +61,9 @@ public class JwtAuthService {
     return Jwts
         .builder()
         .setClaims(extraClaims)
+        .claim("user-id", "id goes here")
+        .claim("user", userDetails
+            .getUsername())
         .setSubject(userDetails.getUsername())
         .setIssuedAt(new Date(System.currentTimeMillis()))
         .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -80,7 +84,7 @@ public class JwtAuthService {
     return extractClaim(token, Claims::getExpiration);
   }
 
-  private Claims extractAllClaims(String token) {
+  public Claims extractAllClaims(String token) {
     return Jwts
         .parserBuilder()
         .setSigningKey(getSignInKey())

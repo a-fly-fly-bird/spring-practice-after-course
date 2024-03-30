@@ -53,7 +53,6 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("username is " + username);
         Optional<User> user = this.userRepository.findByEmail(username);
         // 终于找到你了🥹。花了一下午
         // 代码不规范，亲人两行泪啊
