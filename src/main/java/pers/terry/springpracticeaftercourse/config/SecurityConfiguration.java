@@ -13,6 +13,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import lombok.RequiredArgsConstructor;
 import pers.terry.springpracticeaftercourse.filter.JwtAuthFilter;
+import pers.terry.springpracticeaftercourse.handler.CustomAccessDeniedHandler;
+import pers.terry.springpracticeaftercourse.handler.CustomUnauthorizedHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -23,10 +25,14 @@ public class SecurityConfiguration {
                         "/auth/**",
                         "/swagger-ui/**",
                         "/webjars/**",
-                        "/swagger-ui.html" };
+                        "/swagger-ui.html"
+        };
 
         private final JwtAuthFilter jwtAuthFilter;
         private final AuthenticationProvider authenticationProvider;
+
+        private final CustomAccessDeniedHandler customAccessDeniedHandler;
+        private final CustomUnauthorizedHandler customUnauthorizedHandler;
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,6 +43,13 @@ public class SecurityConfiguration {
                                                 .authenticated())
                                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                                 .authenticationProvider(authenticationProvider)
+                                // 授权失败处理
+                                .exceptionHandling(handling -> handling
+                                                .accessDeniedHandler(
+                                                                customAccessDeniedHandler))
+                                // 认证失败处理
+                                .exceptionHandling(handling -> handling.authenticationEntryPoint(
+                                                customUnauthorizedHandler))
                                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
                 return http.build();
         }

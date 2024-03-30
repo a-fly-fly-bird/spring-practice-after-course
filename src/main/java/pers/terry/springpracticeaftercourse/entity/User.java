@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -38,7 +39,7 @@ public class User implements UserDetails {
   private UUID id;
 
   @Column(nullable = false, length = 30)
-  private String name;
+  private String username;
 
   @Column(length = 50, unique = true)
   private String email;
@@ -47,6 +48,7 @@ public class User implements UserDetails {
   private Integer age;
 
   @Column(length = 256, nullable = false)
+  @JsonIgnore
   private String password;
 
   /**

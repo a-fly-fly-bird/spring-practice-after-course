@@ -34,11 +34,11 @@ public class UserService implements UserDetailsService {
     }
 
     private UserReponseDto toUserResponseDto(User user) {
-        return UserReponseDto.builder().name(user.getName()).email(user.getEmail()).build();
+        return UserReponseDto.builder().name(user.getUsername()).email(user.getEmail()).build();
     }
 
     private User toUser(UserDto userDto) {
-        User user = User.builder().name(userDto.name()).email(userDto.email()).age(userDto.age())
+        User user = User.builder().username(userDto.name()).email(userDto.email()).age(userDto.age())
                 .password(userDto.password()).build();
         List<UserRole> userRoles = new ArrayList<>();
         userRoles.add(UserRole.builder().role(UserRoleEnum.USER).user(user).build());

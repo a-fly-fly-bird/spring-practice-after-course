@@ -10,5 +10,5 @@ import pers.terry.springpracticeaftercourse.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
-  Optional<User> findByEmail(String email);
+  public Optional<User> findByEmail(String email);
 }
