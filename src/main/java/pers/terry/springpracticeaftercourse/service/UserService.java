@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -52,6 +53,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
+
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = this.userRepository.findByEmail(username);
         // 终于找到你了🥹。花了一下午
@@ -62,6 +64,7 @@ public class UserService implements UserDetailsService {
         return user.get();
     }
 
+    @Cacheable(value = "db0", key = "email")
     public String findUserByEmail(String email) {
         Optional<User> user = this.userRepository.findByEmail(email);
         return user.get().getEmail();

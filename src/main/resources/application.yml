@@ -64,3 +64,9 @@ application:
       refresh-token:
         expiration: 604800000 # 7 days
 
+logging:
+  level:
+    root: INFO
+    "[org.springframework.web]": INFO
+    "[com.howtodoinjava]": INFO
+    "[org.hibernate]": INFO

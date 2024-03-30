@@ -2,6 +2,8 @@ package pers.terry.springpracticeaftercourse.controller;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,7 @@ import pers.terry.springpracticeaftercourse.service.UserService;
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
+    final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
 
     @GetMapping("/{uuid}")
@@ -24,6 +27,7 @@ public class UserController {
 
     @GetMapping("/UserByEmail")
     public String findUserByEmail(String email) {
+        logger.info("hello world");
         return this.userService.findUserByEmail(email);
     }
 }
