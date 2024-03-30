@@ -55,9 +55,16 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("username is " + username);
         Optional<User> user = this.userRepository.findByEmail(username);
+        // 终于找到你了🥹。花了一下午
+        // 代码不规范，亲人两行泪啊
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("没有找到该用户");
         }
         return user.get();
+    }
+
+    public String findUserByEmail(String email) {
+        Optional<User> user = this.userRepository.findByEmail(email);
+        return user.get().getEmail();
     }
 }

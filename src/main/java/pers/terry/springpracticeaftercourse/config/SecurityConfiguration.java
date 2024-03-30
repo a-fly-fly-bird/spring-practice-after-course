@@ -22,6 +22,7 @@ import pers.terry.springpracticeaftercourse.handler.CustomUnauthorizedHandler;
 public class SecurityConfiguration {
 
         private static final String[] WHITE_LIST_URL = {
+                        "/user/**",
                         "/auth/**",
                         "/swagger-ui/**",
                         "/webjars/**",
@@ -36,13 +37,12 @@ public class SecurityConfiguration {
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-                http.csrf(AbstractHttpConfigurer::disable)
+                http.csrf(AbstractHttpConfigurer::disable).headers(headers -> headers.frameOptions().disable())
                                 .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST_URL)
                                                 .permitAll()
                                                 .anyRequest()
                                                 .authenticated())
                                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                                .authenticationProvider(authenticationProvider)
                                 // 授权失败处理
                                 .exceptionHandling(handling -> handling
                                                 .accessDeniedHandler(
@@ -50,6 +50,7 @@ public class SecurityConfiguration {
                                 // 认证失败处理
                                 .exceptionHandling(handling -> handling.authenticationEntryPoint(
                                                 customUnauthorizedHandler))
+                                .authenticationProvider(authenticationProvider)
                                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
                 return http.build();
         }
