@@ -23,12 +23,9 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    @SuppressWarnings("null")
     public UserReponseDto addUser(UserDto userDto) {
         User user = this.toUser(userDto);
-        System.out.println(user);
         user = this.userRepository.save(user);
-        // System.out.println(user.toString());
         return toUserResponseDto(user);
     }
 
@@ -37,10 +34,12 @@ public class UserService {
     }
 
     private User toUser(UserDto userDto) {
+        User user = User.builder().name(userDto.name()).email(userDto.email()).age(userDto.age())
+                .password(userDto.password()).build();
         List<UserRole> userRoles = new ArrayList<>();
-        userRoles.add(UserRole.builder().role(UserRoleEnum.USER).build());
-        return User.builder().name(userDto.name()).email(userDto.email()).age(userDto.age())
-                .password(userDto.password()).userRoles(userRoles).build();
+        userRoles.add(UserRole.builder().role(UserRoleEnum.USER).user(user).build());
+        user.setUserRoles(userRoles);
+        return user;
     }
 
     public UserReponseDto getUserById(UUID uuid) {

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,7 +43,18 @@ public class User {
   @Column(length = 50, nullable = false)
   private String password;
 
-  @OneToMany(mappedBy = "user")
+  /**
+   * cascade 相当于 给当前设置的实体操作另一个实体的权限.
+   * Reference: https://www.jianshu.com/p/e8caafce5445 and
+   * https://www.baeldung.com/jpa-cascade-types
+   * 
+   * mappedBy: JPA Relationships can be either unidirectional(单向的) or
+   * bidirectional（双向的）. 一般多的一方是the owning
+   * side，如果要想Relationships是bidirectional（双向的），就需要在The inverse or the referencing
+   * side指定map到关系的拥有方。
+   * Reference: https://www.baeldung.com/jpa-joincolumn-vs-mappedby
+   */
+  @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
   @JsonManagedReference
   private List<UserRole> userRoles;
 }
