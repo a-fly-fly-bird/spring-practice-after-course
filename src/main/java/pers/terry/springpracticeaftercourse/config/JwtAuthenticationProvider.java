@@ -32,7 +32,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
           userDetails.getAuthorities());
     }
 
-    throw new BadCredentialsException("Error!!");
+    throw new BadCredentialsException("BadCredentialsException Error!!");
   }
 
   @Override

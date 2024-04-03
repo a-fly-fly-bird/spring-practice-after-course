@@ -3,7 +3,9 @@ package pers.terry.springpracticeaftercourse.service;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -47,5 +49,12 @@ public class AuthenticationService {
 
   public String decodeToken(String token) {
     return this.jwtAuthService.extractAllClaims(token).toString();
+  }
+
+  public String resetPassword(String password) {
+    var encryptedPassword = new BCryptPasswordEncoder().encode(password);
+    var username = SecurityContextHolder.getContext().getAuthentication().getName();
+    this.userService.resetPassword(username, encryptedPassword);
+    return "success";
   }
 }

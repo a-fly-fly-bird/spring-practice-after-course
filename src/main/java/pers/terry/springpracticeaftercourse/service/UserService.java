@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -68,5 +69,14 @@ public class UserService implements UserDetailsService {
     public String findUserByEmail(String email) {
         Optional<User> user = this.userRepository.findByEmail(email);
         return user.get().getEmail();
+    }
+
+    public void resetPassword(String username, String encryptedPassword) {
+        Optional<User> userOptional = this.userRepository.findByEmail(username);
+        if (userOptional.isPresent()){
+            var user = userOptional.get();
+            user.setPassword(encryptedPassword);
+            this.userRepository.save(user);
+        }
     }
 }
