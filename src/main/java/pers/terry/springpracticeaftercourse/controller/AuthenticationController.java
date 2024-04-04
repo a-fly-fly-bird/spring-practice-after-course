@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
-import pers.terry.springpracticeaftercourse.dto.AuthenticationRequest;
-import pers.terry.springpracticeaftercourse.dto.AuthenticationResponseDto;
-import pers.terry.springpracticeaftercourse.dto.UserDto;
-import pers.terry.springpracticeaftercourse.dto.UserReponseDto;
+import pers.terry.springpracticeaftercourse.dto.*;
 import pers.terry.springpracticeaftercourse.service.AuthenticationService;
 
 @RestController
@@ -36,7 +33,7 @@ public class AuthenticationController {
   }
 
   @PutMapping("/reset")
-  public ResponseEntity<String> resetPassword(@RequestBody String password){
-    return ResponseEntity.ok(this.authenticationService.resetPassword(password));
+  public ResponseEntity<String> resetPassword(@RequestBody PasswordDto password){
+    return ResponseEntity.ok(this.authenticationService.resetPassword(password.getPassword()));
   }
 }

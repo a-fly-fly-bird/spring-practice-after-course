@@ -5,7 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
   private final JwtAuthService jwtAuthService;
   private final UserService userService;
-
+  private final PasswordEncoder passwordEncoder;
   public UserReponseDto register(UserDto userDto) {
     return this.userService.addUser(userDto);
   }
@@ -39,7 +39,7 @@ public class AuthenticationService {
             request.account()).build());
         return AuthenticationResponseDto.builder().token(token).build();
       } else {
-        throw new UsernameNotFoundException("invalid user request..!!");
+        throw new UsernameNotFoundException("没有通过校验");
       }
     } catch (Exception e) {
       System.out.println(e.getMessage());
@@ -52,7 +52,7 @@ public class AuthenticationService {
   }
 
   public String resetPassword(String password) {
-    var encryptedPassword = new BCryptPasswordEncoder().encode(password);
+    var encryptedPassword = this.passwordEncoder.encode(password);
     var username = SecurityContextHolder.getContext().getAuthentication().getName();
     this.userService.resetPassword(username, encryptedPassword);
     return "success";
