@@ -70,6 +70,10 @@ public class User implements UserDetails {
   @JsonManagedReference
   private List<UserRole> userRoles;
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+  @JsonManagedReference
+  private List<Article> articles;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> auths = new ArrayList<>();

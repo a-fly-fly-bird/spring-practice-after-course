@@ -3,6 +3,7 @@ package pers.terry.springpracticeaftercourse.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class AuthenticationController {
   private final AuthenticationService authenticationService;
 
   @PostMapping("/register")
-  public UserReponseDto addUser(@RequestBody UserDto userDto) {
+  public UserReponseDto addUser(@RequestBody @Validated UserDto userDto) {
     logger.info("new user registered");
     return this.authenticationService.register(userDto);
   }
@@ -33,7 +34,8 @@ public class AuthenticationController {
   }
 
   @PutMapping("/reset")
-  public ResponseEntity<String> resetPassword(@RequestBody PasswordDto password){
+  public ResponseEntity<String> resetPassword(@RequestBody @Validated PasswordDto password){
     return ResponseEntity.ok(this.authenticationService.resetPassword(password.getPassword()));
   }
+  
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import pers.terry.springpracticeaftercourse.controller.AuthenticationController;
 import pers.terry.springpracticeaftercourse.dto.UserDto;
 import pers.terry.springpracticeaftercourse.dto.UserReponseDto;
 import pers.terry.springpracticeaftercourse.entity.User;
@@ -26,8 +29,12 @@ import pers.terry.springpracticeaftercourse.repository.UserRepository;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
+    final Logger logger = LoggerFactory.getLogger(UserDetailsService.class);
     public UserReponseDto addUser(UserDto userDto) {
+        if(userRepository.existsByEmail(userDto.email())){
+            logger.warn("用户已经存在了，不可以重复注册");
+            return null;
+        }
         User user = this.toUser(userDto);
         var password = new BCryptPasswordEncoder().encode(userDto.password());
         user.setPassword(password);
