@@ -15,6 +15,8 @@ import pers.terry.springpracticeaftercourse.dto.UserDto;
 import pers.terry.springpracticeaftercourse.dto.UserReponseDto;
 import pers.terry.springpracticeaftercourse.entity.User;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -23,27 +25,21 @@ public class AuthenticationService {
   private final JwtAuthService jwtAuthService;
   private final UserService userService;
   private final PasswordEncoder passwordEncoder;
-  public UserReponseDto register(UserDto userDto) {
+  public Optional<UserReponseDto> register(UserDto userDto) {
     return this.userService.addUser(userDto);
   }
 
-  public AuthenticationResponseDto authenticate(AuthenticationRequest request) throws UsernameNotFoundException {
-    System.out.println("request is " + request.toString());
+  public Optional<AuthenticationResponseDto> authenticate(AuthenticationRequest request) {
     // /如果认证失败会抛出异常
-    try {
-      Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-          request.account(),
-          request.password()));
-      if (authentication.isAuthenticated()) {
-        var token = jwtAuthService.generateToken(User.builder().username(request.account()).email(
-            request.account()).build());
-        return AuthenticationResponseDto.builder().token(token).build();
-      } else {
-        throw new UsernameNotFoundException("没有通过校验");
-      }
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      throw new UsernameNotFoundException("invalid user request..!!");
+    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+            request.account(),
+            request.password()));
+    if (authentication.isAuthenticated()) {
+      var token = jwtAuthService.generateToken(User.builder().username(request.account()).email(
+              request.account()).build());
+      return Optional.of(AuthenticationResponseDto.builder().token(token).build());
+    } else {
+      return Optional.empty();
     }
   }
 

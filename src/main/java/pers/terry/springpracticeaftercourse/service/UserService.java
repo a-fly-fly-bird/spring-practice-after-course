@@ -30,16 +30,16 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     final Logger logger = LoggerFactory.getLogger(UserDetailsService.class);
-    public UserReponseDto addUser(UserDto userDto) {
+    public Optional<UserReponseDto> addUser(UserDto userDto) {
         if(userRepository.existsByEmail(userDto.email())){
             logger.warn("用户已经存在了，不可以重复注册");
-            return null;
+            return Optional.empty();
         }
         User user = this.toUser(userDto);
         var password = new BCryptPasswordEncoder().encode(userDto.password());
         user.setPassword(password);
         user = this.userRepository.save(user);
-        return toUserResponseDto(user);
+        return Optional.of(toUserResponseDto(user));
     }
 
     private UserReponseDto toUserResponseDto(User user) {
