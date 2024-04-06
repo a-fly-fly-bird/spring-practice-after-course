@@ -1,6 +1,7 @@
 package pers.terry.springpracticeaftercourse.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ public class ArticleController {
   private final ArticleService articleService;
 
   @PostMapping("/")
-  @Operation(summary = "添加文章")
+  // authScheme 就是前面 SpringDocConfig .addSecuritySchemes("authScheme" 的 authScheme
+  @Operation(summary = "添加文章", security = @SecurityRequirement(name = "authScheme"))
   public ResponseEntity<ArticleDto> addArticle(@RequestBody @Validated ArticleDto articleDto) {
     Article article = this.articleService.addArticle(articleDto);
     return ResponseEntity.ok(articleDto);
