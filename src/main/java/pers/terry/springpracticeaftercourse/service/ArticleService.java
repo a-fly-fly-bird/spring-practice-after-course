@@ -2,6 +2,10 @@ package pers.terry.springpracticeaftercourse.service;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pers.terry.springpracticeaftercourse.dto.ArticleDto;
@@ -29,5 +33,10 @@ public class ArticleService {
               return this.articleRepository.save(article);
             })
         .get();
+  }
+
+  public Page<Article> getArticlesByPage(Integer page, Integer size) {
+    Pageable pages = PageRequest.of(page, size, Sort.by("createdTime"));
+    return this.articleRepository.findAll(pages);
   }
 }
