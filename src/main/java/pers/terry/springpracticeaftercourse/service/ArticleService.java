@@ -39,4 +39,8 @@ public class ArticleService {
     Pageable pages = PageRequest.of(page, size, Sort.by("createdTime"));
     return this.articleRepository.findAll(pages);
   }
+
+  public Article editArticle(Article article) {
+    return this.articleRepository.saveAndFlush(article);
+  }
 }

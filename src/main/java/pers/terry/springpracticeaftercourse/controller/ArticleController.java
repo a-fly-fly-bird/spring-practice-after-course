@@ -40,4 +40,10 @@ public class ArticleController {
   public Page<Article> getArticles(@PathVariable Integer page, @PathVariable Integer size) {
     return this.articleService.getArticlesByPage(page, size);
   }
+
+  @PutMapping("/")
+  @Operation(summary = "编辑文章", security = @SecurityRequirement(name = "authScheme"))
+  public ResponseEntity<Article> editArticle(@RequestBody Article article) {
+    return ResponseEntity.ok(this.articleService.editArticle(article));
+  }
 }

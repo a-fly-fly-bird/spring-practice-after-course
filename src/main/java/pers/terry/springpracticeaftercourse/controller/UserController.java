@@ -23,12 +23,16 @@ public class UserController {
 
   // TODO 接口不能设计为根据Token来判断用户，因为ADMIN会有权限查看其他用户
   @GetMapping("/")
-  public UserReponseDto findUserInfo(@RequestBody @Validated UserQueryDTO userQueryDTO) {
+  public UserReponseDto findUserInfo(@RequestBody UserQueryDTO userQueryDTO) {
     logger.info("查找用户中");
-    return this.userService
-        .getUserByAccount(userQueryDTO.account())
-        .map(UserReponseDto::from)
-        .orElse(null);
+    var username = SecurityContextHolder.getContext().getAuthentication().getName();
+    return this.userService.getUserByAccount(username).map(UserReponseDto::from).orElse(null);
+  }
+
+  @GetMapping("/detail")
+  public UserReponseDto findUserDetailInfo(@RequestBody UserQueryDTO userQueryDTO) {
+    var username = SecurityContextHolder.getContext().getAuthentication().getName();
+    return this.userService.getUserByAccount(username).map(UserReponseDto::from).orElse(null);
   }
 
   @DeleteMapping("/")
