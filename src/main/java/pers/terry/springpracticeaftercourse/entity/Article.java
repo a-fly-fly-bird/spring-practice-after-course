@@ -2,11 +2,10 @@ package pers.terry.springpracticeaftercourse.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.*;
+import pers.terry.springpracticeaftercourse.dto.ArticleDto;
 
 @Entity
 @Data
@@ -23,7 +22,6 @@ public class Article {
   @Column(nullable = false)
   private String title;
 
-  @Column(nullable = true)
   private String description;
 
   @Column(nullable = false)
@@ -39,4 +37,14 @@ public class Article {
   @JsonBackReference
   @JoinColumn(name = "user_id", referencedColumnName = "id")
   private User user;
+
+  public static Article from(ArticleDto articleDto) {
+    return Article.builder()
+        .title(articleDto.getTitle())
+        .content(articleDto.getContent())
+        .description(articleDto.getDescription())
+        .createdTime(LocalDateTime.now())
+        .updateTime(LocalDateTime.now())
+        .build();
+  }
 }

@@ -47,11 +47,15 @@ spring:
 
 # 不再使用SpringFox，而是SpringDoc
 springdoc:
+  # 这部分是OpenAPI 描述信息
   api-docs:
     # http://localhost:8080/api-docs
+    # 必须放行这个接口，否则swagger会显示No API definition provided.
     path: /api-docs
     enabled: true
+  # 这个是根据OpenAPI 描述信息显示界面的前端整合
   swagger-ui:
+    disable-swagger-default-url: true
     # 可以通过 http://localhost:8080/swagger-ui/index.html 和 http://localhost:8080/swagger-ui-custom.html 两个地址访问
     path: /swagger-ui-custom.html
     enabled: true
