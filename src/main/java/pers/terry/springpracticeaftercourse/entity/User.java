@@ -1,17 +1,7 @@
 package pers.terry.springpracticeaftercourse.entity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,10 +11,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Data
@@ -49,21 +46,20 @@ public class User implements UserDetails {
   @Column(length = 50, unique = true)
   private String email;
 
-  @Column()
-  private Integer age;
+  @Column() private Integer age;
 
   @Column(length = 256, nullable = false)
   @JsonIgnore
   private String password;
 
+  @Column() private Boolean isDeleted = false;
+
   /**
-   * cascade 相当于 给当前设置的实体操作另一个实体的权限.
-   * Reference: <a href="https://www.jianshu.com/p/e8caafce5445">...</a> and
-   * <a href="https://www.baeldung.com/jpa-cascade-types">...</a>
-   * mappedBy: JPA Relationships can be either unidirectional(单向的) or
-   * bidirectional（双向的）. 一般多的一方是the owning
-   * side，如果要想Relationships是bidirectional（双向的），就需要在The inverse or the referencing
-   * side指定map到关系的拥有方。
+   * cascade 相当于 给当前设置的实体操作另一个实体的权限. Reference: <a
+   * href="https://www.jianshu.com/p/e8caafce5445">...</a> and <a
+   * href="https://www.baeldung.com/jpa-cascade-types">...</a> mappedBy: JPA Relationships can be
+   * either unidirectional(单向的) or bidirectional（双向的）. 一般多的一方是the owning
+   * side，如果要想Relationships是bidirectional（双向的），就需要在The inverse or the referencing side指定map到关系的拥有方。
    * Reference: <a href="https://www.baeldung.com/jpa-joincolumn-vs-mappedby">...</a>
    */
   @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
@@ -110,11 +106,19 @@ public class User implements UserDetails {
 
   @Override
   public String toString() {
-    return "User{" +
-            "id=" + id +
-            ", username='" + username + '\'' +
-            ", email='" + email + '\'' +
-            ", age=" + age +
-            ", password='" + password + '\'';
+    return "User{"
+        + "id="
+        + id
+        + ", username='"
+        + username
+        + '\''
+        + ", email='"
+        + email
+        + '\''
+        + ", age="
+        + age
+        + ", password='"
+        + password
+        + '\'';
   }
 }

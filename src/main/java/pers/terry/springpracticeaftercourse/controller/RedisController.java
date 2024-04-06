@@ -14,7 +14,7 @@ public class RedisController {
 
   private final RedisTemplate<String, String> redisTemplate;
 
-  @SuppressWarnings("null")
+  // Just for test
   @GetMapping("/save")
   public String save(String key, String value) {
     redisTemplate.opsForValue().set(key, value);
