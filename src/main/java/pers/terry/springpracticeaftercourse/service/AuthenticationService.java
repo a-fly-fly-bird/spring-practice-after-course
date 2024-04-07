@@ -32,12 +32,14 @@ public class AuthenticationService {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.account(), request.password()));
     if (authentication.isAuthenticated()) {
-      return Optional.of(
+      var user =
           User.builder()
               .username(request.account())
               .email(request.account())
               .password(request.password())
-              .build());
+              .build();
+      user.setToken(this.jwtAuthService.generateToken(user));
+      return Optional.of(user);
     } else {
       return Optional.empty();
     }

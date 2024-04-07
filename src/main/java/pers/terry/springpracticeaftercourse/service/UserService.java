@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,6 +27,7 @@ import pers.terry.springpracticeaftercourse.repository.UserRepository;
 public class UserService implements UserDetailsService {
 
   private final UserRepository userRepository;
+  private final JwtAuthService jwtAuthService;
   final Logger logger = LoggerFactory.getLogger(UserDetailsService.class);
 
   public Optional<UserReponseDto> addUser(UserDto userDto) {
@@ -35,6 +38,7 @@ public class UserService implements UserDetailsService {
     User user = this.toUser(userDto);
     var password = new BCryptPasswordEncoder().encode(userDto.password());
     user.setPassword(password);
+    user.setToken(this.jwtAuthService.generateToken(user));
     user = this.userRepository.save(user);
     return Optional.of(toUserResponseDto(user));
   }
@@ -102,5 +106,19 @@ public class UserService implements UserDetailsService {
               return user;
             })
         .map(this.userRepository::saveAndFlush);
+  }
+
+  public Optional<User> updateAccount(UserDto userDto) {
+    var username = SecurityContextHolder.getContext().getAuthentication().getName();
+    var user = this.userRepository.findByEmail(username);
+    return user.map(user1 -> {
+      if(StringUtils.isNotBlank(userDto.email())){
+        user1.setEmail(userDto.email());
+      }
+      if(StringUtils.isNotBlank(userDto.name())){
+        user1.setUsername(userDto.name());
+      }
+      return user1;
+    });
   }
 }

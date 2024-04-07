@@ -54,6 +54,8 @@ public class User implements UserDetails {
 
   @Column() private Boolean isDeleted = false;
 
+  private String token;
+
   /**
    * cascade 相当于 给当前设置的实体操作另一个实体的权限. Reference: <a
    * href="https://www.jianshu.com/p/e8caafce5445">...</a> and <a
