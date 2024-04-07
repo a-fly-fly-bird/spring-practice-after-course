@@ -5,14 +5,16 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pers.terry.springpracticeaftercourse.dto.*;
+import pers.terry.springpracticeaftercourse.entity.Result;
 import pers.terry.springpracticeaftercourse.entity.User;
 import pers.terry.springpracticeaftercourse.service.AuthenticationService;
 import pers.terry.springpracticeaftercourse.service.JwtAuthService;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -27,13 +29,15 @@ public class AuthenticationController {
    * @return 注册结果
    */
   @PostMapping("/register")
-  public ResponseEntity<String> addUser(@RequestBody @Validated UserDto userDto) {
+  @ResponseBody
+  public ResponseEntity<Result<String>> addUser(@RequestBody @Validated UserDto userDto) {
     Optional<UserReponseDto> userReponseDtoOptional = this.authenticationService.register(userDto);
     String result = userReponseDtoOptional.map(value -> "创建成功").orElse("已经存在");
-    return ResponseEntity.ok(result);
+    return ResponseEntity.ok(Result.ok(result));
   }
 
   @PostMapping("/login")
+  @ResponseBody
   public ResponseEntity<AuthenticationResponseDto> authenticate(
       @RequestBody @Validated AuthenticationRequest request) {
     //    return
@@ -51,10 +55,13 @@ public class AuthenticationController {
   }
 
   @PutMapping("/reset")
-  public ResponseEntity<String> resetPassword(@RequestBody @Validated PasswordDto password) {
-    return this.authenticationService
-        .resetPassword(password.getPassword())
-        .map(user -> ResponseEntity.ok("重置成功"))
-        .orElse(ResponseEntity.badRequest().build());
+  @ResponseBody
+  public Result<String> resetPassword(@RequestBody @Validated PasswordDto password) {
+    String result =
+        this.authenticationService
+            .resetPassword(password.getPassword())
+            .map(user -> "重置成功")
+            .orElse("失败");
+    return Result.ok(result);
   }
 }
