@@ -12,3 +12,7 @@
 ## Database architecture
 
 E-R: [realworld-java21-springboot3 Database architecture](https://github.com/shirohoo/realworld-java21-springboot3?tab=readme-ov-file#database-architecture)
+
+## 异常处理
+
+[SpringBoot优雅的全局异常处理](https://www.cnblogs.com/xuwujing/p/10933082.html#!comments)

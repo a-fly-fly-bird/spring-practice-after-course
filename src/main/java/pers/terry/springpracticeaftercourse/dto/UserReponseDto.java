@@ -1,7 +1,6 @@
 package pers.terry.springpracticeaftercourse.dto;
 
 import lombok.Builder;
-import lombok.Setter;
 import pers.terry.springpracticeaftercourse.entity.User;
 
 @Builder
