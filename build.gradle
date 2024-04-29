@@ -39,7 +39,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.apache.commons:commons-pool2:2.12.0'
     implementation 'org.springframework.boot:spring-boot-starter-logging'
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.14.0'
     implementation 'cn.hutool:hutool-all:5.8.27'
 }
 
