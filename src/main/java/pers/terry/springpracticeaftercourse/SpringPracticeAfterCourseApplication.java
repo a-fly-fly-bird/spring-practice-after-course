@@ -12,5 +12,4 @@ public class SpringPracticeAfterCourseApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringPracticeAfterCourseApplication.class, args);
 	}
-
 }

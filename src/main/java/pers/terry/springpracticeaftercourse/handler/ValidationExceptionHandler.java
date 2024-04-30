@@ -29,6 +29,7 @@ public class ValidationExceptionHandler {
               String errorMessage = error.getDefaultMessage();
               errors.put(fieldName, errorMessage);
             });
+    logger.info("hello world");
     return errors;
   }
 }

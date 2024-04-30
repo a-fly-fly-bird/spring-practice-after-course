@@ -1,7 +1,9 @@
 package pers.terry.springpracticeaftercourse.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Optional;
-
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import lombok.RequiredArgsConstructor;
 import pers.terry.springpracticeaftercourse.dto.AuthenticationRequest;
 import pers.terry.springpracticeaftercourse.dto.AuthenticationResponseDto;
 import pers.terry.springpracticeaftercourse.dto.PasswordDto;
@@ -28,6 +28,7 @@ import pers.terry.springpracticeaftercourse.service.JwtAuthService;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/auth")
+@Tag(name = "校验", description = "权限控制")
 public class AuthenticationController {
   final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
   private final AuthenticationService authenticationService;
@@ -36,7 +37,6 @@ public class AuthenticationController {
   /**
    * 注册新用户
    *
-   * @param userDto
    * @return 注册结果
    */
   @PostMapping("/register")
@@ -57,8 +57,9 @@ public class AuthenticationController {
         .authenticate(request)
         .map(
             user -> {
-              var token = jwtAuthService.generateToken(
-                  User.builder().username(request.account()).email(request.account()).build());
+              var token =
+                  jwtAuthService.generateToken(
+                      User.builder().username(request.account()).email(request.account()).build());
               return ResponseEntity.ok(AuthenticationResponseDto.builder().token(token).build());
             })
         .orElse(ResponseEntity.badRequest().build());
@@ -67,13 +68,17 @@ public class AuthenticationController {
   @PutMapping("/reset")
   @ResponseBody
   public Result<String> resetPassword(@RequestBody @Validated PasswordDto password) {
-    String result = this.authenticationService
-        .resetPassword(password.getPassword())
-        .map(user -> "重置成功")
-        .orElse("失败");
+    String result =
+        this.authenticationService
+            .resetPassword(password.getPassword())
+            .map(user -> "重置成功")
+            .orElse("失败");
     return Result.ok(result);
   }
 
+  // The @Hidden annotation on exception handler methods, is considered when building generic
+  // (error) responses from @ControllerAdvice exception handlers.
+  @Operation(summary = "空指针测试")
   @GetMapping("/nullPointerTest")
   public String nullPointerTest() {
     throw new NullPointerException("空指针错误测试");
