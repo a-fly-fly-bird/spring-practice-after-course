@@ -1,0 +1,76 @@
+spring:
+  application:
+    name: spring-data-complete-course
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo
+    username: root
+    password: 20010610
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 下面就是hikari的配置。
+    hikari:
+      # 在连接池中维护的最小空闲连接数
+      minimum-idle: 10
+      # 允许一个连接在连接池中闲置的最大时间
+      idle-timeout: 30000
+      # 最大连接池数大小
+      maximum-pool-size: 20
+      # 连接关闭后的最长生存时间
+      max-lifetime: 120000
+      # 客户端从连接池等待连接的最大毫秒数
+      connection-timeout: 30000
+  jpa:
+    # jpa底层默认使用的ORM框架是hibernate
+    hibernate:
+      # DDL是数据定义语言, 这个字段设置怎么控制数据库里的表
+      ddl-auto: update
+    # 打印sql
+    show-sql: true
+    properties:
+      hibernate:
+        # 打印格式化的sql
+        "[format_sql]": true
+        # 数据库方言
+        dialect: org.hibernate.dialect.MySQLDialect
+    # 这个不是必须的，会自动检测
+    database: mysql
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      # https://github.com/redis/lettuce/wiki/Connection-Pooling
+      lettuce:
+        pool:
+          max-idle: 16
+          max-active: 32
+          min-idle: 8
+
+# 不再使用SpringFox，而是SpringDoc
+springdoc:
+  # 这部分是OpenAPI 描述信息
+  api-docs:
+    # http://localhost:8080/api-docs
+    # 必须放行这个接口，否则swagger会显示No API definition provided.
+    path: /api-docs
+    enabled: true
+  # 这个是根据OpenAPI 描述信息显示界面的前端整合
+  swagger-ui:
+    disable-swagger-default-url: true
+    # 可以通过 http://localhost:8080/swagger-ui/index.html 和 http://localhost:8080/swagger-ui-custom.html 两个地址访问
+    path: /swagger-ui-custom.html
+    enabled: true
+
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
+
+logging:
+  level:
+    root: INFO
+    "[org.springframework.web]": INFO
+    "[com.howtodoinjava]": INFO
+    "[org.hibernate]": INFO
