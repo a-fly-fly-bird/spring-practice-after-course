@@ -1,7 +1,8 @@
 package pers.terry.springpracticeaftercourse.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record AuthenticationRequest(@NotBlank String account, @NotBlank String password) {
+public record AuthenticationRequest(@NotBlank @Email String account, @NotBlank String password) {
 
 }

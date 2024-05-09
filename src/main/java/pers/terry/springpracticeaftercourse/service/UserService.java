@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pers.terry.springpracticeaftercourse.dto.UserDto;
@@ -34,6 +35,7 @@ public class UserService implements UserDetailsService {
   private final JwtAuthService jwtAuthService;
   final Logger logger = LoggerFactory.getLogger(UserDetailsService.class);
 
+  @Transactional
   public UserReponseDto addUser(UserDto userDto) throws UserExistsException {
     if (userRepository.existsByEmail(userDto.email())) {
       logger.warn("用户已经存在了，不可以重复注册");
@@ -71,13 +73,9 @@ public class UserService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Optional<User> user = this.userRepository.findByEmail(username);
-    // 终于找到你了🥹。花了一下午
-    // 代码不规范，亲人两行泪啊
-    if (user.isEmpty()) {
-      throw new UsernameNotFoundException("没有找到该用户");
-    }
-    return user.get();
+    return this.userRepository.findByEmail(username).orElseThrow(() -> {
+      return new UsernameNotFoundException("没有找到该用户");
+    });
   }
 
   @Cacheable(value = "db0", key = "email")

@@ -1,6 +1,7 @@
 package pers.terry.springpracticeaftercourse.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,15 +31,19 @@ public class AuthenticationService {
 
   public User authenticate(AuthenticationRequest request) throws AuthenticationException {
     // /如果认证失败会抛出异常
-    authenticationManager.authenticate(
+    var authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(request.account(), request.password()));
-    var user = User.builder()
-        .username(request.account())
-        .email(request.account())
-        .password(request.password())
-        .build();
-    user.setToken(this.jwtAuthService.generateToken(user));
-    return user;
+    if (authentication.isAuthenticated()) {
+      var user = User.builder()
+          .username(request.account())
+          .email(request.account())
+          .password(request.password())
+          .build();
+      user.setToken(this.jwtAuthService.generateToken(user));
+      return user;
+    } else {
+      throw new BadCredentialsException("null");
+    }
   }
 
   public User resetPassword(String password) throws UserDontExistsException {

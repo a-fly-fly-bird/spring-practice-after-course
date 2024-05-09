@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
@@ -28,14 +27,14 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-    try{
+    try {
       if (passwordEncoder.matches(password, userDetails.getPassword())) {
         return new UsernamePasswordAuthenticationToken(username, password,
-                userDetails.getAuthorities());
+            userDetails.getAuthorities());
       }
-    }catch (BadCredentialsException e){
+    } catch (BadCredentialsException e) {
       throw new BadCredentialsException("BadCredentialsException Error!!");
-    }catch (Exception e){
+    } catch (Exception e) {
       System.out.println(e.getMessage());
       throw e;
     }
