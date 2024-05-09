@@ -1,17 +1,19 @@
 package pers.terry.springpracticeaftercourse.service;
 
-import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
 import pers.terry.springpracticeaftercourse.dto.AuthenticationRequest;
 import pers.terry.springpracticeaftercourse.dto.UserDto;
 import pers.terry.springpracticeaftercourse.dto.UserReponseDto;
 import pers.terry.springpracticeaftercourse.entity.User;
+import pers.terry.springpracticeaftercourse.exception.UserDontExistsException;
+import pers.terry.springpracticeaftercourse.exception.UserExistsException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,30 +24,24 @@ public class AuthenticationService {
   private final UserService userService;
   private final PasswordEncoder passwordEncoder;
 
-  public Optional<UserReponseDto> register(UserDto userDto) {
+  public UserReponseDto register(UserDto userDto) throws UserExistsException {
     return this.userService.addUser(userDto);
   }
 
-  public Optional<User> authenticate(AuthenticationRequest request) {
+  public User authenticate(AuthenticationRequest request) throws AuthenticationException {
     // /如果认证失败会抛出异常
-    Authentication authentication =
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.account(), request.password()));
-    if (authentication.isAuthenticated()) {
-      var user =
-          User.builder()
-              .username(request.account())
-              .email(request.account())
-              .password(request.password())
-              .build();
-      user.setToken(this.jwtAuthService.generateToken(user));
-      return Optional.of(user);
-    } else {
-      return Optional.empty();
-    }
+    authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(request.account(), request.password()));
+    var user = User.builder()
+        .username(request.account())
+        .email(request.account())
+        .password(request.password())
+        .build();
+    user.setToken(this.jwtAuthService.generateToken(user));
+    return user;
   }
 
-  public Optional<User> resetPassword(String password) {
+  public User resetPassword(String password) throws UserDontExistsException {
     var encryptedPassword = this.passwordEncoder.encode(password);
     var username = SecurityContextHolder.getContext().getAuthentication().getName();
     return this.userService.resetPassword(username, encryptedPassword);
