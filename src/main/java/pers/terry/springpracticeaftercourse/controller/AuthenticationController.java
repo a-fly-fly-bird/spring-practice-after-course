@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,8 +25,6 @@ import pers.terry.springpracticeaftercourse.entity.Result;
 import pers.terry.springpracticeaftercourse.exception.UserDontExistsException;
 import pers.terry.springpracticeaftercourse.exception.UserExistsException;
 import pers.terry.springpracticeaftercourse.service.AuthenticationService;
-import pers.terry.springpracticeaftercourse.service.JwtAuthService;
-import pers.terry.springpracticeaftercourse.service.UserService;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,9 +33,6 @@ import pers.terry.springpracticeaftercourse.service.UserService;
 public class AuthenticationController {
   private final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
   private final AuthenticationService authenticationService;
-  private final JwtAuthService jwtAuthService;
-  private final UserService userService;
-  private final PasswordEncoder passwordEncoder;
 
   /**
    * 注册新用户
@@ -56,6 +50,11 @@ public class AuthenticationController {
     }
   }
 
+  /**
+   * 
+   * @param request
+   * @return
+   */
   @PostMapping("/login")
   @ResponseBody
   public Result<AuthenticationResponseDto> authenticate(
@@ -70,6 +69,11 @@ public class AuthenticationController {
     }
   }
 
+  /**
+   * 
+   * @param password
+   * @return
+   */
   @PutMapping("/reset")
   @ResponseBody
   @Operation(summary = "重置密码", security = @SecurityRequirement(name = "authScheme"))
