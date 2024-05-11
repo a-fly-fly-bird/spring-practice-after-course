@@ -1,40 +1,45 @@
 package pers.terry.springpracticeaftercourse.service;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import pers.terry.springpracticeaftercourse.controller.AuthenticationController;
 
-/**
- * 这个相当于工具类，都是写死的。
- */
+/** 这个相当于工具类，都是写死的。 */
 @Service
 public class JwtAuthService {
 
+  private final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+
   @Value("${application.security.jwt.secret-key}")
   private String secretKey;
+
   @Value("${application.security.jwt.expiration}")
   private long jwtExpiration;
+
   @Value("${application.security.jwt.refresh-token.expiration}")
   private long refreshExpiration;
 
   public String extractUsername(String token) {
-    System.out.println("extractClaim(token, Claims::getSubject) " + extractClaim(token, Claims::getSubject));
+    logger.info(
+        "extractClaim(token, Claims::getSubject) " + extractClaim(token, Claims::getSubject));
     return extractClaim(token, Claims::getSubject);
   }
 
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    logger.info("start extract claim");
     final Claims claims = extractAllClaims(token);
     return claimsResolver.apply(claims);
   }
@@ -43,27 +48,20 @@ public class JwtAuthService {
     return generateToken(new HashMap<>(), userDetails);
   }
 
-  public String generateToken(
-      Map<String, Object> extraClaims,
-      UserDetails userDetails) {
+  public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
     return buildToken(extraClaims, userDetails, jwtExpiration);
   }
 
-  public String generateRefreshToken(
-      UserDetails userDetails) {
+  public String generateRefreshToken(UserDetails userDetails) {
     return buildToken(new HashMap<>(), userDetails, refreshExpiration);
   }
 
   private String buildToken(
-      Map<String, Object> extraClaims,
-      UserDetails userDetails,
-      long expiration) {
-    return Jwts
-        .builder()
+      Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
+    return Jwts.builder()
         .setClaims(extraClaims)
         .claim("user-id", "id goes here")
-        .claim("user", userDetails
-            .getUsername())
+        .claim("user", userDetails.getUsername())
         .setSubject(userDetails.getUsername())
         .setIssuedAt(new Date(System.currentTimeMillis()))
         .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -85,8 +83,7 @@ public class JwtAuthService {
   }
 
   public Claims extractAllClaims(String token) {
-    return Jwts
-        .parserBuilder()
+    return Jwts.parserBuilder()
         .setSigningKey(getSignInKey())
         .build()
         .parseClaimsJws(token)
